@@ -17,10 +17,12 @@ namespace SocketServer
         private ILogger logger;
         private Socket mainSocket;  // The socket which will listen for and assign connections
         private List<Socket> workerSockets; // These sockets will handle clients
+        private Action<byte[]> receiveCallback;
 
-        public SocketServerManager(ILogger pLogger)
+        public SocketServerManager(ILogger pLogger, Action<byte[]> pReceiveCallback)
         {
             logger = pLogger;
+            receiveCallback = pReceiveCallback;
             workerSockets = new List<Socket>();
         }
 
@@ -83,6 +85,12 @@ namespace SocketServer
             socket = null;
         }
 
+        private void ProcessReceivedData(byte[] receivedData, int size)
+        {
+            Array.Resize<byte>(ref receivedData, size);
+            receiveCallback(receivedData);
+        }
+
         public void OnClientConnect(IAsyncResult asyncResult)
         {
             try
@@ -124,7 +132,7 @@ namespace SocketServer
                 // 0 bytes received -> socket closed
                 if (numBytesReceived > 0)
                 {
-                    // TODO: process received data
+                    ProcessReceivedData(state.DataBuffer, numBytesReceived);
 
                     // Wait for next data
                     WaitForData(workerSocket);

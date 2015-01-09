@@ -2,4 +2,4 @@
 
 My .NET sockets sandbox.
 
-In progress: A simple server-client setup.
+In progress: A simple server-client setup for LAN.

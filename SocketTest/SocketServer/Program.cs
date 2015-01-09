@@ -22,13 +22,19 @@ namespace SocketServer
         public Program()
         {
             logger = new Logger();
-            server = new SocketServerManager(logger);
+            server = new SocketServerManager(logger, OnReceiveData);
             server.StartServer();
 
             Console.WriteLine("Press any key to exit.");
             Console.ReadKey();
 
             server.StopServer();
+        }
+
+        private void OnReceiveData(byte[] receivedData)
+        {
+            string msg = Encoding.ASCII.GetString(receivedData);
+            Console.WriteLine("Received: " + msg);
         }
     }
 }

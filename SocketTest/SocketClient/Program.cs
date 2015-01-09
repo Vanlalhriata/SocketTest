@@ -25,6 +25,20 @@ namespace SocketClient
             client = new SocketClientManager(logger);
             client.ConnectToServer();
 
+            string msg = "";
+
+            Console.Write("Message: ");
+            msg = Console.ReadLine();
+
+            while (!msg.Equals("exit", StringComparison.OrdinalIgnoreCase))
+            {
+                byte[] bytes = Encoding.ASCII.GetBytes(msg);
+                client.Send(bytes);
+
+                Console.Write("Message: ");
+                msg = Console.ReadLine();
+            }
+
             Console.WriteLine("Press any key to exit.");
             Console.ReadKey();
 

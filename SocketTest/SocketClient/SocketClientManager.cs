@@ -45,6 +45,11 @@ namespace SocketClient
             logger.Log("Disconnected");
         }
 
+        public void Send(byte[] bytesToSend)
+        {
+            mainSocket.Send(bytesToSend);
+        }
+
         private IPEndPoint GetServerIp()
         {
             // TODO: Make server ip constructor parameter
