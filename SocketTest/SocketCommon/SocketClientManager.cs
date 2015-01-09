@@ -1,23 +1,16 @@
-﻿using SocketCommon;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace SocketClient
+namespace SocketCommon
 {
-    public class SocketClientManager
+    public class SocketClientManager : SocketManagerBase
     {
+        public bool IsConnected { get { return mainSocket.Connected; } }
 
-        private ILogger logger;
-        private Socket mainSocket;
-
-        public SocketClientManager(ILogger pLogger)
+        public SocketClientManager(ILogger pLogger, Action<byte[]> pReceiveCallback)
+            : base(pLogger, pReceiveCallback)
         {
-            logger = pLogger;
         }
 
         public void ConnectToServer()
@@ -28,7 +21,9 @@ namespace SocketClient
             {
                 mainSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                 mainSocket.Connect(serverIp);
+
                 logger.Log("Connected to " + serverIp.Address.ToString() + ":" + serverIp.Port + ".");
+                WaitForData(mainSocket);
             }
             catch (SocketException ex)
             {
@@ -39,13 +34,11 @@ namespace SocketClient
 
         public void Disconnect()
         {
-            if (null != mainSocket)
-                mainSocket.Close();
-
+            DisconnectMainSocket();
             logger.Log("Disconnected");
         }
 
-        public void Send(byte[] bytesToSend)
+        public override void Send(byte[] bytesToSend)
         {
             mainSocket.Send(bytesToSend);
         }
@@ -55,7 +48,13 @@ namespace SocketClient
             // TODO: Make server ip constructor parameter
             IPHostEntry hostEntry = Dns.GetHostEntry("");
             IPAddress localIp = hostEntry.AddressList[1];
-            return new IPEndPoint(localIp, 8095);
+            return new IPEndPoint(localIp, PORT);
+        }
+
+        protected override void OnSocketDestroy(Socket socket)
+        {
+            logger.Log("Server disconnected");
+            Disconnect();
         }
 
     }

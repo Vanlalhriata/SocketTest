@@ -1,9 +1,6 @@
 ﻿using SocketCommon;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace SocketServer
 {
@@ -35,6 +32,8 @@ namespace SocketServer
         {
             string msg = Encoding.ASCII.GetString(receivedData);
             Console.WriteLine("Received: " + msg);
+
+            server.Send(receivedData);
         }
     }
 }

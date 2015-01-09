@@ -1,9 +1,6 @@
 ﻿using SocketCommon;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace SocketClient
 {
@@ -22,7 +19,7 @@ namespace SocketClient
         public Program()
         {
             logger = new Logger();
-            client = new SocketClientManager(logger);
+            client = new SocketClientManager(logger, OnReceiveData);
             client.ConnectToServer();
 
             string msg = "";
@@ -30,7 +27,7 @@ namespace SocketClient
             Console.Write("Message: ");
             msg = Console.ReadLine();
 
-            while (!msg.Equals("exit", StringComparison.OrdinalIgnoreCase))
+            while (!msg.Equals("exit", StringComparison.OrdinalIgnoreCase) && client.IsConnected)
             {
                 byte[] bytes = Encoding.ASCII.GetBytes(msg);
                 client.Send(bytes);
@@ -43,6 +40,12 @@ namespace SocketClient
             Console.ReadKey();
 
             client.Disconnect();
+        }
+
+        private void OnReceiveData(byte[] receivedData)
+        {
+            string msg = Encoding.ASCII.GetString(receivedData);
+            Console.WriteLine("Received: " + msg);
         }
     }
 }
