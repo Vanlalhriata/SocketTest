@@ -1,5 +1,6 @@
 ﻿using SocketCommon;
 using System;
+using System.Net;
 using System.Text;
 
 namespace SocketClient
@@ -18,8 +19,10 @@ namespace SocketClient
 
         public Program()
         {
+            IPAddress serverIp = IPAddress.Parse("192.168.2.2");
+
             logger = new Logger();
-            client = new SocketClientManager(logger, OnReceiveData);
+            client = new SocketClientManager(logger, OnReceiveData, serverIp);
             client.ConnectToServer();
 
             string msg = "";

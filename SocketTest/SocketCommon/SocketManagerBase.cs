@@ -69,6 +69,10 @@ namespace SocketCommon
                 }
 
             }
+            catch (ObjectDisposedException)
+            {
+                logger.Log("ObjectDisposedException ignored at OnDataReceived");
+            }
             catch (SocketException ex)
             {
                 if (ex.ErrorCode == 10054)

@@ -6,23 +6,26 @@ namespace SocketCommon
 {
     public class SocketClientManager : SocketManagerBase
     {
+        private IPAddress serverIp;
+
         public bool IsConnected { get { return mainSocket.Connected; } }
 
-        public SocketClientManager(ILogger pLogger, Action<byte[]> pReceiveCallback)
+        public SocketClientManager(ILogger pLogger, Action<byte[]> pReceiveCallback, IPAddress pServerIp)
             : base(pLogger, pReceiveCallback)
         {
+            serverIp = pServerIp;
         }
 
         public void ConnectToServer()
         {
-            IPEndPoint serverIp = GetServerIp();
+            IPEndPoint serverEndPoint = new IPEndPoint(serverIp, PORT);
 
             try
             {
                 mainSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                mainSocket.Connect(serverIp);
+                mainSocket.Connect(new IPEndPoint(serverIp, PORT));
 
-                logger.Log("Connected to " + serverIp.Address.ToString() + ":" + serverIp.Port + ".");
+                logger.Log("Connected to " + serverEndPoint.Address.ToString() + ":" + serverEndPoint.Port + ".");
                 WaitForData(mainSocket);
             }
             catch (SocketException ex)
@@ -41,14 +44,6 @@ namespace SocketCommon
         public override void Send(byte[] bytesToSend)
         {
             mainSocket.Send(bytesToSend);
-        }
-
-        private IPEndPoint GetServerIp()
-        {
-            // TODO: Make server ip constructor parameter
-            IPHostEntry hostEntry = Dns.GetHostEntry("");
-            IPAddress localIp = hostEntry.AddressList[1];
-            return new IPEndPoint(localIp, PORT);
         }
 
         protected override void OnSocketDestroy(Socket socket)
