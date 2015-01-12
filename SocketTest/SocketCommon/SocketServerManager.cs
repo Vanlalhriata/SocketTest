@@ -98,6 +98,7 @@ namespace SocketCommon
         protected override void OnSocketDestroy(Socket socket)
         {
             logger.Log("Client exited. Closing connection");
+            workerSockets.Remove(socket);
         }
 
     }
