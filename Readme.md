@@ -1,5 +1,5 @@
 #SocketTest
 
-My .NET sockets sandbox. The solution contains a core project and two demo projects implementing a server and client.
+My .NET sockets sandbox. The SocketTest solution contains a core project and two demo projects implementing a server and client.
 
-In progress: A simple server-client setup for LAN.
+UnitySocketDemo is a Unity project that implements the client. This, however, requires the Pro addon (Android, iOS, WP) for each platform.
