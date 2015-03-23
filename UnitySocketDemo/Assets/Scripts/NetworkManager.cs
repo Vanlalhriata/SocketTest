@@ -16,7 +16,7 @@ public class NetworkManager : MonoBehaviour
 
 	public void Start()
 	{
-		IPAddress serverIp = IPAddress.Parse("192.168.140.122");
+		IPAddress serverIp = IPAddress.Parse("192.168.0.126");
 
 		logger = new Logger();
 		client = new SocketClientManager(logger, OnReceive, serverIp);

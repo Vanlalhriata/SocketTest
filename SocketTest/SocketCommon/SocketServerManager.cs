@@ -20,7 +20,7 @@ namespace SocketCommon
         {
             // Get the local ip
             IPHostEntry hostEntry = Dns.GetHostEntry("");
-            IPAddress localIp = hostEntry.AddressList[1];
+            IPAddress localIp = hostEntry.AddressList[hostEntry.AddressList.Length - 1];
             IPEndPoint localEndpoint = new IPEndPoint(localIp, PORT);
 
             try
