@@ -19,7 +19,7 @@ namespace SocketClient
 
         public Program()
         {
-            IPAddress serverIp = IPAddress.Parse("192.168.2.2");
+            IPAddress serverIp = IPAddress.Parse("192.168.140.122");
 
             logger = new Logger();
             client = new SocketClientManager(logger, OnReceiveData, serverIp);
